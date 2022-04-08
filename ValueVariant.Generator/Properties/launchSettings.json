@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "ValueVariant.Generator": {
+      "commandName": "DebugRoslynComponent",
+      "targetProject": "..\\ValueVariant.Test\\ValueVariant.Test.csproj"
+    }
+  }
+}

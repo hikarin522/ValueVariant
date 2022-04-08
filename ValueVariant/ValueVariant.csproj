@@ -1,0 +1,58 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <RootNamespace>System.ValueVariant</RootNamespace>
+    <IsPackable>true</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\README.md" Pack="true" PackagePath="\" Visible="false" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+    <PackageReference Include="Microsoft.Bcl.HashCode" Version="1.1.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <T4 Include="**\*.tt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="@(T4)">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>%(RelativeDir)%(Filename).tt.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="@(T4->'%(RelativeDir)%(Filename).tt.cs')">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>%(RelativeDir)%(Filename)</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <Target Name="T4Generate" BeforeTargets="BeforeBuild" Condition="'$(MSBuildRuntimeType)' != 'Full'">
+    <Exec Command="dotnet t4 &quot;%(T4.Filename).tt&quot;" WorkingDirectory="$(MSBuildProjectDirectory)\%(T4.RelativeDir)" />
+    <ItemGroup>
+      <Compile Remove="@(T4->'%(Identity).cs')" />
+      <Compile Include="@(T4->'%(Identity).cs')" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="VariantGeneratorBuild" BeforeTargets="_GetPackageFiles">
+    <MSBuild Projects="../ValueVariant.Generator/ValueVariant.Generator.csproj" Targets="GetTargetPath">
+      <Output TaskParameter="TargetOutputs" ItemName="GeneratorOutputs" />
+    </MSBuild>
+    <ItemGroup>
+      <None Include="@(GeneratorOutputs)" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    </ItemGroup>
+  </Target>
+
+</Project>

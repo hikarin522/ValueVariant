@@ -1,0 +1,32 @@
+<#+
+static int MaxTypeParam { get; } = ReadIntEnvironment("T4_MAX_TYPE_PARAM") ?? 16;
+
+static int? ReadIntEnvironment(string name) {
+	var str = Environment.GetEnvironmentVariable(name);
+	return string.IsNullOrWhiteSpace(str) ? null : int.TryParse(str, out var value) ? value : null;
+}
+
+static string Join<T>(IEnumerable<T> list) {
+	return string.Join(", ", list);
+}
+
+static string Join<T>(IEnumerable<T> list, Func<T, string> selector) {
+	return Join(list.Select(selector));
+}
+
+static string Join(int start, int count) {
+	return string.Join(", ", Range(start, count));
+}
+
+static string Join(int start, int count, Func<int, string> selector) {
+	return Join(Range(start, count, selector));
+}
+
+static IEnumerable<int> Range(int start, int count) {
+	return Enumerable.Range(start, count);
+}
+
+static IEnumerable<T> Range<T>(int start, int count, Func<int, T> selector) {
+	return Enumerable.Range(start, count).Select(selector);
+}
+#>

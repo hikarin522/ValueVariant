@@ -1,0 +1,16 @@
+﻿<Project>
+  <PropertyGroup>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+
+    <Version>0.1.0</Version>
+    <Authors>hikarin522</Authors>
+    <Copyright>(c) 2022 hikarin522.</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/hikarin522/ValueVariant</RepositoryUrl>
+    <PackageProjectUrl>$(RepositoryUrl)</PackageProjectUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageTags>variant;union</PackageTags>
+  </PropertyGroup>
+</Project>
