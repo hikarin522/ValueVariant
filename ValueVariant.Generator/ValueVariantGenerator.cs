@@ -13,9 +13,6 @@ public sealed class ValueVariantGenerator : ISourceGenerator
 {
     public void Initialize(GeneratorInitializationContext context)
     {
-        context.RegisterForPostInitialization(ctx => {
-            ctx.AddSource($"{nameof(ValueVariantAttribute)}.cs", new ValueVariantAttributeTemplate().TransformText());
-        });
         context.RegisterForSyntaxNotifications(() => new SyntaxReceiver(nameof(ValueVariantAttribute)));
     }
 
