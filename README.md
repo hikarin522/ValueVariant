@@ -31,7 +31,7 @@ readonly partial struct SampleVariant: IEquatable<SampleVariant>
 
     private readonly Union Value;
 
-    public TypeIndex Index { get; }
+    public readonly TypeIndex Index;
 
     public int Item1 => Index == TypeIndex.Type1 ? Value.Item1 : throw new InvalidCastException();
     public long Item2 => Index == TypeIndex.Type2 ? Value.Item2 : throw new InvalidCastException();
