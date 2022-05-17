@@ -3,7 +3,7 @@
 [![Nuget](https://img.shields.io/nuget/v/ValueVariant)](https://www.nuget.org/packages/ValueVariant/)
 [![Nuget](https://img.shields.io/nuget/dt/ValueVariant)](https://www.nuget.org/packages/ValueVariant/)
 
-Efficient and type-safe Variant type for C# unmanaged type
+C# source generator to generate efficient and type-safe variant types for unmanaged types.
 
 ## Usage
 
