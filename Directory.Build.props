@@ -12,5 +12,6 @@
     <PackageProjectUrl>$(RepositoryUrl)</PackageProjectUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageTags>variant;union</PackageTags>
+    <Description>C# source generator to generate efficient and type-safe variant types for unmanaged types.</Description>
   </PropertyGroup>
 </Project>
