@@ -38,6 +38,8 @@ namespace ValueVariant.Test
             v = intValue;
             Assert.Equal(TypeIndex3.Type1, v.TypeIndex);
             Assert.Equal(intValue, v.Item1);
+            Assert.Throws<InvalidCastException>(() => v.Item2);
+            Assert.Throws<InvalidCastException>(() => v.Item3);
             Assert.True(v.TryGetValue(out v1));
             Assert.False(v.TryGetValue(out v2));
             Assert.False(v.TryGetValue(out v3));
@@ -50,6 +52,8 @@ namespace ValueVariant.Test
             v = guid;
             Assert.Equal(TypeIndex3.Type2, v.TypeIndex);
             Assert.Equal(guid, v.Item2);
+            Assert.Throws<InvalidCastException>(() => v.Item1);
+            Assert.Throws<InvalidCastException>(() => v.Item3);
             Assert.False(v.TryGetValue(out v1));
             Assert.True(v.TryGetValue(out v2));
             Assert.False(v.TryGetValue(out v3));
@@ -62,6 +66,8 @@ namespace ValueVariant.Test
             v = now;
             Assert.Equal(TypeIndex3.Type3, v.TypeIndex);
             Assert.Equal(now, v.Item3);
+            Assert.Throws<InvalidCastException>(() => v.Item1);
+            Assert.Throws<InvalidCastException>(() => v.Item2);
             Assert.False(v.TryGetValue(out v1));
             Assert.False(v.TryGetValue(out v2));
             Assert.True(v.TryGetValue(out v3));

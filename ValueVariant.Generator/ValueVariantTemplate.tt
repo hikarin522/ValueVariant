@@ -67,8 +67,13 @@ namespace <#= Namespace #>
 <# } #>
 
 <# for (var i = 1; i <= Count; ++i ) { #>
-        public T<#= i #> Item<#= i #> => V2.Details.ValueVariant.GetValue<#= i #><Union, T<#= i #>>(this.UnionValue, (byte)this.TypeIndex);
+        public T<#= i #> Item<#= i #> => this.TypeIndex == V2.TypeIndex<#= Count #>.Type<#= i #> ? this.UnionValue.Item<#= i #> : ThrowInvalidCastException<T<#= i #>>();
 <# } #>
+
+#if NETSTANDARD2_1_OR_GREATER
+        [DoesNotReturn]
+#endif
+        private TV ThrowInvalidCastException<TV>() => throw new InvalidCastException();
 
 <# for (var i = 1; i <= Count; ++i ) { #>
         public static implicit operator T(T<#= i #> value) => new T(value);

@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <RootNamespace>System.ValueVariant</RootNamespace>
     <IsPackable>true</IsPackable>
   </PropertyGroup>
