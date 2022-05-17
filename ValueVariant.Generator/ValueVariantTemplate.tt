@@ -11,13 +11,14 @@
 // </auto-generated>
 
 using System;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-<# if (Options.HasFlag(ValueVariantGenerateOptions.MessagePackFormatter)) { #>
 
+<# if (Options.HasFlag(ValueVariantGenerateOptions.MessagePackFormatter)) { #>
 using MessagePack;
 using MessagePack.Formatters;
-<# } #>
 
+<# } #>
 #if NETCOREAPP2_1_OR_GREATER
 using System.Diagnostics.CodeAnalysis;
 
@@ -59,7 +60,7 @@ namespace <#= Namespace #>
 
         public readonly TypeIndex Index;
 
-        byte V2.Details.IValueVariant.TypeIndexByte => (byte)this.Index;
+        byte V2.Details.IValueVariant.TypeIndexByte { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => (byte)this.Index; }
 
         private <#= TypeName #>(in Union value, TypeIndex index)
             => (this.Value, this.Index) = (value, index);
@@ -69,7 +70,7 @@ namespace <#= Namespace #>
 <# } #>
 
 <# for (var i = 1; i <= Count; ++i ) { #>
-        public T<#= i #> Item<#= i #> => this.Index == TypeIndex.Type<#= i #> ? this.Value.Item<#= i #> : ThrowInvalidCastException<T<#= i #>>();
+        public T<#= i #> Item<#= i #> { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => this.Index == TypeIndex.Type<#= i #> ? this.Value.Item<#= i #> : ThrowInvalidCastException<T<#= i #>>(); }
 <# } #>
 
 #if NETSTANDARD2_1_OR_GREATER

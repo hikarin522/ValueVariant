@@ -1,9 +1,11 @@
 
+using System.Runtime.CompilerServices;
+
 namespace System.ValueVariant.Details;
 
 public interface IValueVariant
 {
-    byte TypeIndexByte { get; }
+    byte TypeIndexByte { [MethodImpl(MethodImplOptions.AggressiveInlining)] get; }
 
     void AcceptGenericActionVisitor<TV>(in TV visitor) where TV : IValueVariantGenericActionVisitor;
 
