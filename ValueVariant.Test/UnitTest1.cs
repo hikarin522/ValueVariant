@@ -15,13 +15,13 @@ namespace ValueVariant.Test
         public void Test1()
         {
             TestVariant v = default(int);
-            Assert.Equal(v.Accept(new TestVariantVisitor()), (int)v.TypeIndex);
+            Assert.Equal(v.Accept(new TestVariantVisitor()), (int)v.Index);
 
             v = default(TestStruct<Guid>);
-            Assert.Equal(v.Accept(new TestVariantVisitor()), (int)v.TypeIndex);
+            Assert.Equal(v.Accept(new TestVariantVisitor()), (int)v.Index);
 
             v = default(DateTime);
-            Assert.Equal(v.Accept(new TestVariantVisitor()), (int)v.TypeIndex);
+            Assert.Equal(v.Accept(new TestVariantVisitor()), (int)v.Index);
         }
 
         [Fact]
@@ -36,7 +36,7 @@ namespace ValueVariant.Test
 
             var intValue = 0x12345678;
             v = intValue;
-            Assert.Equal(TypeIndex3.Type1, v.TypeIndex);
+            Assert.Equal(TestVariant.TypeIndex.Type1, v.Index);
             Assert.Equal(intValue, v.Item1);
             Assert.Throws<InvalidCastException>(() => v.Item2);
             Assert.Throws<InvalidCastException>(() => v.Item3);
@@ -50,7 +50,7 @@ namespace ValueVariant.Test
 
             var guid = new TestStruct<Guid>(Guid.NewGuid());
             v = guid;
-            Assert.Equal(TypeIndex3.Type2, v.TypeIndex);
+            Assert.Equal(TestVariant.TypeIndex.Type2, v.Index);
             Assert.Equal(guid, v.Item2);
             Assert.Throws<InvalidCastException>(() => v.Item1);
             Assert.Throws<InvalidCastException>(() => v.Item3);
@@ -64,7 +64,7 @@ namespace ValueVariant.Test
 
             var now = DateTime.UtcNow;
             v = now;
-            Assert.Equal(TypeIndex3.Type3, v.TypeIndex);
+            Assert.Equal(TestVariant.TypeIndex.Type3, v.Index);
             Assert.Equal(now, v.Item3);
             Assert.Throws<InvalidCastException>(() => v.Item1);
             Assert.Throws<InvalidCastException>(() => v.Item2);

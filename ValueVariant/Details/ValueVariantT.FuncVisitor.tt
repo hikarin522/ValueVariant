@@ -24,9 +24,9 @@ partial class ValueVariant<<#= Join(1, i, e => $"T{e}") #>>
 		where T: unmanaged, V2.IValueVariant<T, <#= Join(1, i, e => $"T{e}") #>>
 		where V: <#= Join(1, i, e => $"IValueVariantFuncVisitor<T{e}, TR>") #>
 	{
-		return @this.TypeIndex switch {
+		return @this.TypeIndexByte switch {
 <#   for (var j = 1; j <= i; ++j) { #>
-			TypeIndex<#= i #>.Type<#= j #> => visitor.Visit(@this.Item<#= j #>),
+			<#= j #> => visitor.Visit(@this.Item<#= j #>),
 <#   } #>
 			_ => Throw.InvalidOperationException<TR>()
 		};
@@ -37,9 +37,9 @@ partial class ValueVariant<<#= Join(1, i, e => $"T{e}") #>>
 		where T: unmanaged, V2.IValueVariant<T, <#= Join(1, i, e => $"T{e}") #>>
 		where V: <#= Join(1, i, e => $"IValueVariantFuncVisitor<T{e}, TA1, TR>") #>
 	{
-		return @this.TypeIndex switch {
+		return @this.TypeIndexByte switch {
 <#   for (var j = 1; j <= i; ++j) { #>
-			TypeIndex<#= i #>.Type<#= j #> => visitor.Visit(@this.Item<#= j #>, arg1),
+			<#= j #> => visitor.Visit(@this.Item<#= j #>, arg1),
 <#   } #>
 			_ => Throw.InvalidOperationException<TR>()
 		};
