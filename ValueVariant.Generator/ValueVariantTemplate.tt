@@ -205,12 +205,12 @@ namespace <#= Namespace #>
             public T Deserialize(ref MessagePackReader reader, MessagePackSerializerOptions options)
             {
                 var index = options.Resolver.GetFormatterWithVerify<V2.TypeIndex<#= Count #>>().Deserialize(ref reader, options);
-                return index switch {
+                switch (index) {
 <#   for (var i = 1; i <= Count; ++i) { #>
-                    V2.TypeIndex<#= Count #>.Type<#= i #> => new T(options.Resolver.GetFormatterWithVerify<T<#= i #>>().Deserialize(ref reader, options)),
+                    case V2.TypeIndex<#= Count #>.Type<#= i #>: return new T(options.Resolver.GetFormatterWithVerify<T<#= i #>>().Deserialize(ref reader, options));
 <#   } #>
-                    _ => throw new InvalidOperationException()
-                };
+                    default: throw new InvalidOperationException();
+                }
             }
         }
 <# } #>
