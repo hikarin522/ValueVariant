@@ -27,13 +27,15 @@ readonly partial struct SampleVariant: IEquatable<SampleVariant>
         [FieldOffset(0)] float Item3;
     }
 
-    private readonly Union UnionValue;
+    public enum TypeIndex : byte { None, Type1, Type2, Type3 }
 
-    public TypeIndex3 TypeIndex { get; }
+    private readonly Union Value;
 
-    public int Item1 => TypeIndex == TypeIndex3.Type1 ? UnionValue.Item1 : throw new InvalidCastException();
-    public long Item2 => TypeIndex == TypeIndex3.Type2 ? UnionValue.Item2 : throw new InvalidCastException();
-    public float Item3 => TypeIndex == TypeIndex3.Type3 ? UnionValue.Item3 : throw new InvalidCastException();
+    public TypeIndex Index { get; }
+
+    public int Item1 => Index == TypeIndex.Type1 ? Value.Item1 : throw new InvalidCastException();
+    public long Item2 => Index == TypeIndex.Type2 ? Value.Item2 : throw new InvalidCastException();
+    public float Item3 => Index == TypeIndex.Type3 ? Value.Item3 : throw new InvalidCastException();
 
     public SampleVariant(int value) { ... }
     public SampleVariant(long value) { ... }

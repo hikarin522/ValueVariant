@@ -11,13 +11,14 @@
 // </auto-generated>
 
 using System;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-<# if (Options.HasFlag(ValueVariantGenerateOptions.MessagePackFormatter)) { #>
 
+<# if (Options.HasFlag(ValueVariantGenerateOptions.MessagePackFormatter)) { #>
 using MessagePack;
 using MessagePack.Formatters;
-<# } #>
 
+<# } #>
 #if NETCOREAPP2_1_OR_GREATER
 using System.Diagnostics.CodeAnalysis;
 
@@ -53,21 +54,23 @@ namespace <#= Namespace #>
 <# } #>
         }
 
-        private readonly Union UnionValue;
+        public enum TypeIndex : byte { None, <#= Join(1, Count, e => $"Type{e}") #> }
 
-        public V2.TypeIndex<#= Count #> TypeIndex { get; }
+        private readonly Union Value;
 
-        byte V2.Details.IValueVariant.TypeIndexByte => (byte)this.TypeIndex;
+        public readonly TypeIndex Index;
 
-        private <#= TypeName #>(in Union value, V2.TypeIndex<#= Count #> index)
-            => (this.UnionValue, this.TypeIndex) = (value, index);
+        byte V2.Details.IValueVariant.TypeIndexByte { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => (byte)this.Index; }
+
+        private <#= TypeName #>(in Union value, TypeIndex index)
+            => (this.Value, this.Index) = (value, index);
 
 <# for (var i = 1; i <= Count; ++i ) { #>
-        public <#= TypeName #>(T<#= i #> value) : this(new Union(value), V2.TypeIndex<#= Count #>.Type<#= i #>) { }
+        public <#= TypeName #>(T<#= i #> value) : this(new Union(value), TypeIndex.Type<#= i #>) { }
 <# } #>
 
 <# for (var i = 1; i <= Count; ++i ) { #>
-        public T<#= i #> Item<#= i #> => this.TypeIndex == V2.TypeIndex<#= Count #>.Type<#= i #> ? this.UnionValue.Item<#= i #> : ThrowInvalidCastException<T<#= i #>>();
+        public T<#= i #> Item<#= i #> { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => this.Index == TypeIndex.Type<#= i #> ? this.Value.Item<#= i #> : ThrowInvalidCastException<T<#= i #>>(); }
 <# } #>
 
 #if NETSTANDARD2_1_OR_GREATER
@@ -193,10 +196,10 @@ namespace <#= Namespace #>
         {
             public void Serialize(ref MessagePackWriter writer, T value, MessagePackSerializerOptions options)
             {
-                options.Resolver.GetFormatterWithVerify<V2.TypeIndex<#= Count #>>().Serialize(ref writer, value.TypeIndex, options);
-                switch (value.TypeIndex) {
+                options.Resolver.GetFormatterWithVerify<TypeIndex>().Serialize(ref writer, value.Index, options);
+                switch (value.Index) {
 <#   for (var i = 1; i <= Count; ++i) { #>
-                    case V2.TypeIndex<#= Count #>.Type<#= i #>: options.Resolver.GetFormatterWithVerify<T<#= i #>>().Serialize(ref writer, value.Item<#= i #>, options); break;
+                    case TypeIndex.Type<#= i #>: options.Resolver.GetFormatterWithVerify<T<#= i #>>().Serialize(ref writer, value.Item<#= i #>, options); break;
 <#   } #>
                     default: throw new InvalidOperationException();
                 }
@@ -204,10 +207,10 @@ namespace <#= Namespace #>
 
             public T Deserialize(ref MessagePackReader reader, MessagePackSerializerOptions options)
             {
-                var index = options.Resolver.GetFormatterWithVerify<V2.TypeIndex<#= Count #>>().Deserialize(ref reader, options);
+                var index = options.Resolver.GetFormatterWithVerify<TypeIndex>().Deserialize(ref reader, options);
                 switch (index) {
 <#   for (var i = 1; i <= Count; ++i) { #>
-                    case V2.TypeIndex<#= Count #>.Type<#= i #>: return new T(options.Resolver.GetFormatterWithVerify<T<#= i #>>().Deserialize(ref reader, options));
+                    case TypeIndex.Type<#= i #>: return new T(options.Resolver.GetFormatterWithVerify<T<#= i #>>().Deserialize(ref reader, options));
 <#   } #>
                     default: throw new InvalidOperationException();
                 }

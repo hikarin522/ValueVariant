@@ -24,9 +24,9 @@ partial class ValueVariant<<#= Join(1, i, e => $"T{e}") #>>
 		where T: unmanaged, V2.IValueVariant<T, <#= Join(1, i, e => $"T{e}") #>>
 		where V: IValueVariantGenericActionVisitor
 	{
-		switch (@this.TypeIndex) {
+		switch (@this.TypeIndexByte) {
 <#   for (var j = 1; j <= i; ++j) { #>
-			case TypeIndex<#= i #>.Type<#= j #>: visitor.Visit(@this.Item<#= j #>); return;
+			case <#= j #>: visitor.Visit(@this.Item<#= j #>); return;
 <#   } #>
 			default: Throw.InvalidOperationException(); return;
 		}
@@ -37,9 +37,9 @@ partial class ValueVariant<<#= Join(1, i, e => $"T{e}") #>>
 		where T: unmanaged, V2.IValueVariant<T, <#= Join(1, i, e => $"T{e}") #>>
 		where V: IValueVariantGenericActionVisitor<TA1>
 	{
-		switch (@this.TypeIndex) {
+		switch (@this.TypeIndexByte) {
 <#   for (var j = 1; j <= i; ++j) { #>
-			case TypeIndex<#= i #>.Type<#= j #>: visitor.Visit(@this.Item<#= j #>, arg1); return;
+			case <#= j #>: visitor.Visit(@this.Item<#= j #>, arg1); return;
 <#   } #>
 			default: Throw.InvalidOperationException(); return;
 		}
