@@ -16,6 +16,8 @@ public partial class ValueVariantTemplate
 
     public string[] Types { get; }
 
+    public int Count => Types.Length;
+
     public ValueVariantTemplate(ValueVariantGenerateOptions options, string variantType, string[] types)
     {
         this.Options = options;

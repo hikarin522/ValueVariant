@@ -3,7 +3,7 @@
 [![Nuget](https://img.shields.io/nuget/v/ValueVariant)](https://www.nuget.org/packages/ValueVariant/)
 [![Nuget](https://img.shields.io/nuget/dt/ValueVariant)](https://www.nuget.org/packages/ValueVariant/)
 
-Efficient and type-safe Variant type for C# unmanaged type
+C# source generator to generate efficient and type-safe variant types for unmanaged types.
 
 ## Usage
 
@@ -31,9 +31,9 @@ readonly partial struct SampleVariant: IEquatable<SampleVariant>
 
     public TypeIndex3 TypeIndex { get; }
 
-    public int Item1 => TypeIndex == TypeIndex3.Type1 ? UnionValue.Item1 : throw new InvalidOperationException();
-    public long Item2 => TypeIndex == TypeIndex3.Type2 ? UnionValue.Item2 : throw new InvalidOperationException();
-    public float Item3 => TypeIndex == TypeIndex3.Type3 ? UnionValue.Item3 : throw new InvalidOperationException();
+    public int Item1 => TypeIndex == TypeIndex3.Type1 ? UnionValue.Item1 : throw new InvalidCastException();
+    public long Item2 => TypeIndex == TypeIndex3.Type2 ? UnionValue.Item2 : throw new InvalidCastException();
+    public float Item3 => TypeIndex == TypeIndex3.Type3 ? UnionValue.Item3 : throw new InvalidCastException();
 
     public SampleVariant(int value) { ... }
     public SampleVariant(long value) { ... }

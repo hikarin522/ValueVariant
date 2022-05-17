@@ -30,7 +30,7 @@ namespace <#= Namespace #>
 
     using T = global::<#= FullName #>;
 
-<# for (var i = 1; i <= Types.Length; ++i) { #>
+<# for (var i = 1; i <= Count; ++i) { #>
     using T<#= i #> = global::<#= Types[i - 1] #>;
 <# } #>
 
@@ -39,47 +39,52 @@ namespace <#= Namespace #>
     [MessagePackFormatter(typeof(<#= TypeName #>.MessagePackFormatter))]
 <# } #>
     readonly partial struct <#= TypeName #> : IEquatable<T>,
-        <#= Join(1, Types.Length, e => $"V2.Details.IValueVariantElement<T{e}>") #>
+        <#= Join(1, Count, e => $"V2.Details.IValueVariantElement<T{e}>") #>
     {
         [StructLayout(LayoutKind.Explicit)]
         private readonly struct Union
         {
-<# for (var i = 1; i <= Types.Length; ++i ) { #>
+<# for (var i = 1; i <= Count; ++i ) { #>
             [FieldOffset(0)] internal readonly T<#= i #> Item<#= i #>;
 <# } #>
 
-<# for (var i = 1; i <= Types.Length; ++i ) { #>
+<# for (var i = 1; i <= Count; ++i ) { #>
             internal Union(T<#= i #> value) : this() => this.Item<#= i #> = value;
 <# } #>
         }
 
         private readonly Union UnionValue;
 
-        public V2.TypeIndex<#= Types.Length #> TypeIndex { get; }
+        public V2.TypeIndex<#= Count #> TypeIndex { get; }
 
         byte V2.Details.IValueVariant.TypeIndexByte => (byte)this.TypeIndex;
 
-        private <#= TypeName #>(in Union value, V2.TypeIndex<#= Types.Length #> index)
+        private <#= TypeName #>(in Union value, V2.TypeIndex<#= Count #> index)
             => (this.UnionValue, this.TypeIndex) = (value, index);
 
-<# for (var i = 1; i <= Types.Length; ++i ) { #>
-        public <#= TypeName #>(T<#= i #> value) : this(new Union(value), V2.TypeIndex<#= Types.Length #>.Type<#= i #>) { }
+<# for (var i = 1; i <= Count; ++i ) { #>
+        public <#= TypeName #>(T<#= i #> value) : this(new Union(value), V2.TypeIndex<#= Count #>.Type<#= i #>) { }
 <# } #>
 
-<# for (var i = 1; i <= Types.Length; ++i ) { #>
-        public T<#= i #> Item<#= i #> => V2.Details.ValueVariant.GetValue<#= i #><Union, T<#= i #>>(this.UnionValue, (byte)this.TypeIndex);
+<# for (var i = 1; i <= Count; ++i ) { #>
+        public T<#= i #> Item<#= i #> => this.TypeIndex == V2.TypeIndex<#= Count #>.Type<#= i #> ? this.UnionValue.Item<#= i #> : ThrowInvalidCastException<T<#= i #>>();
 <# } #>
 
-<# for (var i = 1; i <= Types.Length; ++i ) { #>
+#if NETSTANDARD2_1_OR_GREATER
+        [DoesNotReturn]
+#endif
+        private TV ThrowInvalidCastException<TV>() => throw new InvalidCastException();
+
+<# for (var i = 1; i <= Count; ++i ) { #>
         public static implicit operator T(T<#= i #> value) => new T(value);
 <# } #>
 
-<# for (var i = 1; i <= Types.Length; ++i ) { #>
+<# for (var i = 1; i <= Count; ++i ) { #>
         public static explicit operator T<#= i #>(in T value) => value.Item<#= i #>;
 <# } #>
 
         public bool Equals(T other)
-            => V2.Details.ValueVariant<<#= Join(1, Types.Length, e => $"T{e}") #>>.Equals(this, other);
+            => V2.Details.ValueVariant<<#= Join(1, Count, e => $"T{e}") #>>.Equals(this, other);
 
 #if NETCOREAPP2_1_OR_GREATER
         public override bool Equals([NotNullWhen(true)] object? obj)
@@ -95,18 +100,18 @@ namespace <#= Namespace #>
             => !lhs.Equals(rhs);
 
         public override int GetHashCode()
-            => V2.Details.ValueVariant<<#= Join(1, Types.Length, e => $"T{e}") #>>.GetHashCode(this);
+            => V2.Details.ValueVariant<<#= Join(1, Count, e => $"T{e}") #>>.GetHashCode(this);
 
         public override string ToString()
-            => V2.Details.ValueVariant<<#= Join(1, Types.Length, e => $"T{e}") #>>.ToString(this);
+            => V2.Details.ValueVariant<<#= Join(1, Count, e => $"T{e}") #>>.ToString(this);
 
-        public interface IActionVisitor : <#= Join(1, Types.Length, e => $"V2.IValueVariantActionVisitor<T{e}>") #> { }
+        public interface IActionVisitor : <#= Join(1, Count, e => $"V2.IValueVariantActionVisitor<T{e}>") #> { }
 
-        public interface IActionVisitor<in TA1> : <#= Join(1, Types.Length, e => $"V2.IValueVariantActionVisitor<T{e}, TA1>") #> { }
+        public interface IActionVisitor<in TA1> : <#= Join(1, Count, e => $"V2.IValueVariantActionVisitor<T{e}, TA1>") #> { }
 
-        public interface IFuncVisitor<out TR> : <#= Join(1, Types.Length, e => $"V2.IValueVariantFuncVisitor<T{e}, TR>") #> { }
+        public interface IFuncVisitor<out TR> : <#= Join(1, Count, e => $"V2.IValueVariantFuncVisitor<T{e}, TR>") #> { }
 
-        public interface IFuncVisitor<in TA1, out TR> : <#= Join(1, Types.Length, e => $"V2.IValueVariantFuncVisitor<T{e}, TA1, TR>") #> { }
+        public interface IFuncVisitor<in TA1, out TR> : <#= Join(1, Count, e => $"V2.IValueVariantFuncVisitor<T{e}, TA1, TR>") #> { }
 
         public void Accept(IActionVisitor visitor)
             => this.AcceptActionVisitor(visitor);
@@ -145,40 +150,40 @@ namespace <#= Namespace #>
         }
 
         public void AcceptActionVisitor<TV>(in TV visitor)
-            where TV : <#= Join(1, Types.Length, e => $"V2.IValueVariantActionVisitor<T{e}>") #>
-            => V2.Details.ValueVariant<<#= Join(1, Types.Length, e => $"T{e}") #>>.AcceptActionVisitor(this, visitor);
+            where TV : <#= Join(1, Count, e => $"V2.IValueVariantActionVisitor<T{e}>") #>
+            => V2.Details.ValueVariant<<#= Join(1, Count, e => $"T{e}") #>>.AcceptActionVisitor(this, visitor);
 
         public void AcceptActionVisitor<TV, TA1>(in TV visitor, TA1 arg1)
-            where TV : <#= Join(1, Types.Length, e => $"V2.IValueVariantActionVisitor<T{e}, TA1>") #>
-            => V2.Details.ValueVariant<<#= Join(1, Types.Length, e => $"T{e}") #>>.AcceptActionVisitor(this, visitor, arg1);
+            where TV : <#= Join(1, Count, e => $"V2.IValueVariantActionVisitor<T{e}, TA1>") #>
+            => V2.Details.ValueVariant<<#= Join(1, Count, e => $"T{e}") #>>.AcceptActionVisitor(this, visitor, arg1);
 
         public void AcceptFuncVisitor<TV, TR>(in TV visitor, out TR result)
-            where TV : <#= Join(1, Types.Length, e => $"V2.IValueVariantFuncVisitor<T{e}, TR>") #>
-            => result = V2.Details.ValueVariant<<#= Join(1, Types.Length, e => $"T{e}") #>>.AcceptFuncVisitor<T, TV, TR>(this, visitor);
+            where TV : <#= Join(1, Count, e => $"V2.IValueVariantFuncVisitor<T{e}, TR>") #>
+            => result = V2.Details.ValueVariant<<#= Join(1, Count, e => $"T{e}") #>>.AcceptFuncVisitor<T, TV, TR>(this, visitor);
 
         public void AcceptFuncVisitor<TV, TA1, TR>(in TV visitor, TA1 arg1, out TR result)
-            where TV : <#= Join(1, Types.Length, e => $"V2.IValueVariantFuncVisitor<T{e}, TA1, TR>") #>
-            => result = V2.Details.ValueVariant<<#= Join(1, Types.Length, e => $"T{e}") #>>.AcceptFuncVisitor<T, TV, TA1, TR>(this, visitor, arg1);
+            where TV : <#= Join(1, Count, e => $"V2.IValueVariantFuncVisitor<T{e}, TA1, TR>") #>
+            => result = V2.Details.ValueVariant<<#= Join(1, Count, e => $"T{e}") #>>.AcceptFuncVisitor<T, TV, TA1, TR>(this, visitor, arg1);
 
         public void AcceptGenericActionVisitor<TV>(in TV visitor)
             where TV : V2.IValueVariantGenericActionVisitor
-            => V2.Details.ValueVariant<<#= Join(1, Types.Length, e => $"T{e}") #>>.AcceptGenericActionVisitor(this, visitor);
+            => V2.Details.ValueVariant<<#= Join(1, Count, e => $"T{e}") #>>.AcceptGenericActionVisitor(this, visitor);
 
         public void AcceptGenericActionVisitor<TV, TA1>(in TV visitor, TA1 arg1)
             where TV : V2.IValueVariantGenericActionVisitor<TA1>
-            => V2.Details.ValueVariant<<#= Join(1, Types.Length, e => $"T{e}") #>>.AcceptGenericActionVisitor(this, visitor, arg1);
+            => V2.Details.ValueVariant<<#= Join(1, Count, e => $"T{e}") #>>.AcceptGenericActionVisitor(this, visitor, arg1);
 
         public void AcceptGenericFuncVisitor<TV, TR>(in TV visitor, out TR result)
             where TV : V2.IValueVariantGenericFuncVisitor<TR>
-            => result = V2.Details.ValueVariant<<#= Join(1, Types.Length, e => $"T{e}") #>>.AcceptGenericFuncVisitor<T, TV, TR>(this, visitor);
+            => result = V2.Details.ValueVariant<<#= Join(1, Count, e => $"T{e}") #>>.AcceptGenericFuncVisitor<T, TV, TR>(this, visitor);
 
         public void AcceptGenericFuncVisitor<TV, TA1, TR>(in TV visitor, TA1 arg1, out TR result)
             where TV : V2.IValueVariantGenericFuncVisitor<TA1, TR>
-            => result = V2.Details.ValueVariant<<#= Join(1, Types.Length, e => $"T{e}") #>>.AcceptGenericFuncVisitor<T, TV, TA1, TR>(this, visitor, arg1);
+            => result = V2.Details.ValueVariant<<#= Join(1, Count, e => $"T{e}") #>>.AcceptGenericFuncVisitor<T, TV, TA1, TR>(this, visitor, arg1);
 
         public struct DefaultConverter : IFuncVisitor<T>
         {
-<# for (var i = 1; i <= Types.Length; ++i ) { #>
+<# for (var i = 1; i <= Count; ++i ) { #>
             public T Visit(in T<#= i #> value) => value;
 <# } #>
         }
@@ -188,10 +193,10 @@ namespace <#= Namespace #>
         {
             public void Serialize(ref MessagePackWriter writer, T value, MessagePackSerializerOptions options)
             {
-                options.Resolver.GetFormatterWithVerify<V2.TypeIndex<#= Types.Length #>>().Serialize(ref writer, value.TypeIndex, options);
+                options.Resolver.GetFormatterWithVerify<V2.TypeIndex<#= Count #>>().Serialize(ref writer, value.TypeIndex, options);
                 switch (value.TypeIndex) {
-<#   for (var i = 1; i <= Types.Length; ++i) { #>
-                    case V2.TypeIndex<#= Types.Length #>.Type<#= i #>: options.Resolver.GetFormatterWithVerify<T<#= i #>>().Serialize(ref writer, value.Item<#= i #>, options); break;
+<#   for (var i = 1; i <= Count; ++i) { #>
+                    case V2.TypeIndex<#= Count #>.Type<#= i #>: options.Resolver.GetFormatterWithVerify<T<#= i #>>().Serialize(ref writer, value.Item<#= i #>, options); break;
 <#   } #>
                     default: throw new InvalidOperationException();
                 }
@@ -199,13 +204,13 @@ namespace <#= Namespace #>
 
             public T Deserialize(ref MessagePackReader reader, MessagePackSerializerOptions options)
             {
-                var index = options.Resolver.GetFormatterWithVerify<V2.TypeIndex<#= Types.Length #>>().Deserialize(ref reader, options);
-                return index switch {
-<#   for (var i = 1; i <= Types.Length; ++i) { #>
-                    V2.TypeIndex<#= Types.Length #>.Type<#= i #> => new T(options.Resolver.GetFormatterWithVerify<T<#= i #>>().Deserialize(ref reader, options)),
+                var index = options.Resolver.GetFormatterWithVerify<V2.TypeIndex<#= Count #>>().Deserialize(ref reader, options);
+                switch (index) {
+<#   for (var i = 1; i <= Count; ++i) { #>
+                    case V2.TypeIndex<#= Count #>.Type<#= i #>: return new T(options.Resolver.GetFormatterWithVerify<T<#= i #>>().Deserialize(ref reader, options));
 <#   } #>
-                    _ => throw new InvalidOperationException()
-                };
+                    default: throw new InvalidOperationException();
+                }
             }
         }
 <# } #>
