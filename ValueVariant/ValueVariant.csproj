@@ -25,23 +25,26 @@
   <ItemGroup>
     <None Update="@(T4)">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>%(RelativeDir)%(Filename).tt.cs</LastGenOutput>
+      <LastGenOutput>%(Identity).cs</LastGenOutput>
     </None>
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="@(T4->'%(RelativeDir)%(Filename).tt.cs')">
+    <Compile Update="@(T4->'%(Identity).cs')">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>%(RelativeDir)%(Filename)</DependentUpon>
+      <DependentUpon>%(Filename)</DependentUpon>
     </Compile>
   </ItemGroup>
 
   <Target Name="T4Generate" BeforeTargets="BeforeBuild" Condition="'$(MSBuildRuntimeType)' != 'Full'">
     <Exec Command="dotnet t4 &quot;%(T4.Filename).tt&quot;" WorkingDirectory="$(MSBuildProjectDirectory)\%(T4.RelativeDir)" />
     <ItemGroup>
-      <Compile Remove="@(T4->'%(Identity).cs')" />
-      <Compile Include="@(T4->'%(Identity).cs')" />
+      <Compile Include="@(T4->'%(Identity).cs')" Exclude="@(Compile)">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>%(Filename)</DependentUpon>
+      </Compile>
     </ItemGroup>
   </Target>
 
