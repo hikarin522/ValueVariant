@@ -60,7 +60,7 @@ namespace <#= Namespace #>
 
         public readonly TypeIndex Index;
 
-        byte V2.Details.IValueVariant.TypeIndexByte { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => (byte)this.Index; }
+        byte V2.Details.IValueVariant.TypeIndex { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => (byte)this.Index; }
 
         private <#= TypeName #>(in Union value, TypeIndex index)
             => (this.Value, this.Index) = (value, index);

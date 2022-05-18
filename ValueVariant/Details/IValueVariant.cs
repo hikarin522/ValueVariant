@@ -5,7 +5,7 @@ namespace System.ValueVariant.Details;
 
 public interface IValueVariant
 {
-    byte TypeIndexByte { [MethodImpl(MethodImplOptions.AggressiveInlining)] get; }
+    byte TypeIndex { [MethodImpl(MethodImplOptions.AggressiveInlining)] get; }
 
     void AcceptGenericActionVisitor<TV>(in TV visitor) where TV : IValueVariantGenericActionVisitor;
 
