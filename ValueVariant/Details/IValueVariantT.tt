@@ -17,12 +17,12 @@ public interface IValueVariant<<#= Join(1, i, e => $"T{e}") #>>:
 	<#= Join(1, i, e => $"IValueVariantIndex{e}<T{e}>") #>
 	<#= string.Join(" ", Range(1, i, e => $"where T{e}: unmanaged")) #>
 {
-	void AcceptActionVisitor<TV>(in TV visitor) where TV: <#= Join(1, i, e => $"IValueVariantActionVisitor<T{e}>") #>;
+	void Accept<TV>(in TV visitor) where TV: <#= Join(1, i, e => $"IValueVariantActionVisitor<T{e}>") #>;
 
-	void AcceptActionVisitor<TV, TA1>(in TV visitor, TA1 arg1) where TV: <#= Join(1, i, e => $"IValueVariantActionVisitor<T{e}, TA1>") #>;
+	void Accept<TV, TA1>(in TV visitor, TA1 arg1) where TV: <#= Join(1, i, e => $"IValueVariantActionVisitor<T{e}, TA1>") #>;
 
-	void AcceptFuncVisitor<TV, TR>(in TV visitor, out TR result) where TV: <#= Join(1, i, e => $"IValueVariantFuncVisitor<T{e}, TR>") #>;
+	void Accept<TV, TR>(in TV visitor, out TR result) where TV: <#= Join(1, i, e => $"IValueVariantFuncVisitor<T{e}, TR>") #>;
 
-	void AcceptFuncVisitor<TV, TA1, TR>(in TV visitor, TA1 arg1, out TR result) where TV: <#= Join(1, i, e => $"IValueVariantFuncVisitor<T{e}, TA1, TR>") #>;
+	void Accept<TV, TA1, TR>(in TV visitor, TA1 arg1, out TR result) where TV: <#= Join(1, i, e => $"IValueVariantFuncVisitor<T{e}, TA1, TR>") #>;
 }
 <# } #>

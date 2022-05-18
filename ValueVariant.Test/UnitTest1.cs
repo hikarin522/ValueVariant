@@ -14,14 +14,27 @@ namespace ValueVariant.Test
         [Fact]
         public void Test1()
         {
-            TestVariant v = default(int);
-            Assert.Equal(v.Accept(new TestVariantVisitor()), (int)v.Index);
+            TestVariant v;
+            TestVariant2 v2;
+            Type type;
+
+            v = default(int);
+            Assert.Equal(typeof(int), v.Accept(new TestVariantVisitor()));
+            v.Accept(new TestVariant2.DefaultConverter(), out v2);
+            v2.Accept(new TestVariantVisitor(), out type);
+            Assert.Equal(typeof(int), type);
 
             v = default(TestStruct<Guid>);
-            Assert.Equal(v.Accept(new TestVariantVisitor()), (int)v.Index);
+            Assert.Equal(typeof(TestStruct<Guid>), v.Accept(new TestVariantVisitor()));
+            v.Accept(new TestVariant2.DefaultConverter(), out v2);
+            v2.Accept(new TestVariantVisitor(), out type);
+            Assert.Equal(typeof(TestStruct<Guid>), type);
 
             v = default(DateTime);
-            Assert.Equal(v.Accept(new TestVariantVisitor()), (int)v.Index);
+            Assert.Equal(typeof(DateTime), v.Accept(new TestVariantVisitor()));
+            v.Accept(new TestVariant2.DefaultConverter(), out v2);
+            v2.Accept(new TestVariantVisitor(), out type);
+            Assert.Equal(typeof(DateTime), type);
         }
 
         [Fact]
