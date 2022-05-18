@@ -35,7 +35,6 @@ namespace <#= Namespace #>
     using T<#= i #> = global::<#= Types[i - 1] #>;
 <# } #>
 
-    [StructLayout(LayoutKind.Sequential, Pack = 1)]
 <# if (Options.HasFlag(ValueVariantGenerateOptions.MessagePackFormatter)) { #>
     [MessagePackFormatter(typeof(<#= TypeName #>.MessagePackFormatter))]
 <# } #>
