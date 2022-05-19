@@ -5,15 +5,15 @@ namespace System.ValueVariant.Details;
 
 public interface IValueVariant
 {
-    byte TypeIndexByte { [MethodImpl(MethodImplOptions.AggressiveInlining)] get; }
+    byte TypeIndex { [MethodImpl(MethodImplOptions.AggressiveInlining)] get; }
 
-    void AcceptGenericActionVisitor<TV>(in TV visitor) where TV : IValueVariantGenericActionVisitor;
+    void Accept(IValueVariantGenericActionVisitor visitor);
 
-    void AcceptGenericActionVisitor<TV, TA1>(in TV visitor, TA1 arg1) where TV : IValueVariantGenericActionVisitor<TA1>;
+    void Accept<TA1>(IValueVariantGenericActionVisitor<TA1> visitor, TA1 arg1);
 
-    void AcceptGenericFuncVisitor<TV, TR>(in TV visitor, out TR result) where TV : IValueVariantGenericFuncVisitor<TR>;
+    TR Accept<TR>(IValueVariantGenericFuncVisitor<TR> visitor);
 
-    void AcceptGenericFuncVisitor<TV, TA1, TR>(in TV visitor, TA1 arg1, out TR result) where TV : IValueVariantGenericFuncVisitor<TA1, TR>;
+    TR Accept<TA1, TR>(IValueVariantGenericFuncVisitor<TA1, TR> visitor, TA1 arg1);
 }
 
 public interface IValueVariantElement<T>: IValueVariant where T: unmanaged { }

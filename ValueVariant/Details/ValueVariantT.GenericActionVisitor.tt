@@ -24,7 +24,7 @@ partial class ValueVariant<<#= Join(1, i, e => $"T{e}") #>>
 		where T: unmanaged, V2.IValueVariant<T, <#= Join(1, i, e => $"T{e}") #>>
 		where V: IValueVariantGenericActionVisitor
 	{
-		switch (@this.TypeIndexByte) {
+		switch (@this.TypeIndex) {
 <#   for (var j = 1; j <= i; ++j) { #>
 			case <#= j #>: visitor.Visit(@this.Item<#= j #>); return;
 <#   } #>
@@ -37,7 +37,7 @@ partial class ValueVariant<<#= Join(1, i, e => $"T{e}") #>>
 		where T: unmanaged, V2.IValueVariant<T, <#= Join(1, i, e => $"T{e}") #>>
 		where V: IValueVariantGenericActionVisitor<TA1>
 	{
-		switch (@this.TypeIndexByte) {
+		switch (@this.TypeIndex) {
 <#   for (var j = 1; j <= i; ++j) { #>
 			case <#= j #>: visitor.Visit(@this.Item<#= j #>, arg1); return;
 <#   } #>

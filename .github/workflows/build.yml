@@ -2,9 +2,17 @@ name: Build
 
 on:
   push:
-    branches: [ master, develop ]
   pull_request:
-    branches: [ master ]
+  workflow_dispatch:
+    inputs:
+      publish_github:
+        type: boolean
+        description: Publish to GitHub Packages
+        default: false
+      publish_nuget:
+        type: boolean
+        description: Publish to nuget.org
+        default: false
 
 env:
   T4_MAX_TYPE_PARAM: 16
@@ -36,6 +44,12 @@ jobs:
         name: nupkg
         path: artifacts/*.nupkg
     - name: NuGet add souce
+      id: nuget_add_source
+      if: ${{ github.event.inputs.publish_github }}
       run: dotnet nuget add source -u hikarin522 -p ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text -n "github" "https://nuget.pkg.github.com/hikarin522/index.json"
-    - name: Publish
+    - name: Publish GitHub Packages
+      if: ${{ steps.nuget_add_source.conclusion == 'success' }}
       run: dotnet nuget push "artifacts/*.nupkg" -k ${{ secrets.GITHUB_TOKEN }} -s "github" --skip-duplicate
+    - name: Publish NuGet
+      if: ${{ github.event.inputs.publish_nuget }}
+      run: dotnet nuget push "artifacts/*.nupkg" -k ${{ secrets.NUGET_OLG_API_KEY }} -s "nuget" --skip-duplicate

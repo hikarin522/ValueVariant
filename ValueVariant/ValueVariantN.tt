@@ -22,7 +22,7 @@ public static class ValueVariant<#= i #>
 	public static bool TryGetValue<T, U>(this T @this, out U @out)
 		where T: unmanaged, IValueVariantIndex<#= i #><U> where U: unmanaged
 	{
-		var flg = @this.TypeIndexByte == <#= i #>;
+		var flg = @this.TypeIndex == <#= i #>;
 		@out = flg ? @this.Item<#= i #> : default;
 		return flg;
 	}

@@ -3,7 +3,7 @@
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
 
-    <Version>0.2.0</Version>
+    <Version>0.3.0</Version>
     <Authors>hikarin522</Authors>
     <Copyright>(c) 2022 hikarin522.</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -12,5 +12,6 @@
     <PackageProjectUrl>$(RepositoryUrl)</PackageProjectUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageTags>variant;union</PackageTags>
+    <Description>C# source generator to generate efficient and type-safe variant types for unmanaged types.</Description>
   </PropertyGroup>
 </Project>

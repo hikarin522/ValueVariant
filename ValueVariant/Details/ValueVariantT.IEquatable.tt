@@ -22,7 +22,7 @@ partial class ValueVariant<<#= Join(1, i, e => $"T{e}") #>>
 {
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool Equals<T>(in T lhs, in T rhs) where T: unmanaged, V2.IValueVariant<T, <#= Join(1, i, e => $"T{e}") #>>
-		=> lhs.TypeIndexByte == rhs.TypeIndexByte && lhs.TypeIndexByte switch {
+		=> lhs.TypeIndex == rhs.TypeIndex && lhs.TypeIndex switch {
 <#   for (var j = 1; j <= i; ++j) { #>
 			<#= j #> => EqualityComparer<T<#= j #>>.Default.Equals(lhs.Item<#= j #>, rhs.Item<#= j #>),
 <#   } #>
@@ -31,16 +31,16 @@ partial class ValueVariant<<#= Join(1, i, e => $"T{e}") #>>
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static int GetHashCode<T>(in T @this) where T: unmanaged, V2.IValueVariant<T, <#= Join(1, i, e => $"T{e}") #>>
-		=> @this.TypeIndexByte switch {
+		=> @this.TypeIndex switch {
 <#   for (var j = 1; j <= i; ++j) { #>
-			<#= j #> => HashCode.Combine(@this.TypeIndexByte, @this.Item<#= j #>),
+			<#= j #> => HashCode.Combine(@this.TypeIndex, @this.Item<#= j #>),
 <#   } #>
-			_ => HashCode.Combine(@this.TypeIndexByte)
+			_ => HashCode.Combine(@this.TypeIndex)
 		};
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static string ToString<T>(in T @this) where T: unmanaged, V2.IValueVariant<T, <#= Join(1, i, e => $"T{e}") #>>
-		=> @this.TypeIndexByte switch {
+		=> @this.TypeIndex switch {
 <#   for (var j = 1; j <= i; ++j) { #>
 			<#= j #> => @this.Item<#= j #>.ToString(),
 <#   } #>

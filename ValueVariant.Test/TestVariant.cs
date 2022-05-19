@@ -9,17 +9,17 @@ namespace ValueVariant.Test;
 [ValueVariant(ValueVariantGenerateOptions.MessagePackFormatter)]
 public readonly partial struct TestVariant : IValueVariant<TestVariant, int, TestStruct<Guid>, DateTime> { }
 
-public readonly struct TestVariantVisitor : TestVariant.IFuncVisitor<int>
+public readonly struct TestVariantVisitor : TestVariant.IFuncVisitor<Type>
 {
-    public int Visit(in int value)
-        => 1;
+    public Type Visit(in int value)
+        => typeof(int);
 
-    public int Visit(in TestStruct<Guid> value)
-        => 2;
+    public Type Visit(in TestStruct<Guid> value)
+        => typeof(TestStruct<Guid>);
 
-    public int Visit(in DateTime value)
-        => 3;
+    public Type Visit(in DateTime value)
+        => typeof(DateTime);
 }
 
 [ValueVariant]
-public readonly partial struct TestVariant2 : IValueVariant<TestVariant2, TestStruct<int>, DateTime, int> { }
+public readonly partial struct TestVariant2 : IValueVariant<TestVariant2, TestStruct<Guid>, DateTime, int> { }

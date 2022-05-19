@@ -35,7 +35,6 @@ namespace <#= Namespace #>
     using T<#= i #> = global::<#= Types[i - 1] #>;
 <# } #>
 
-    [StructLayout(LayoutKind.Sequential, Pack = 1)]
 <# if (Options.HasFlag(ValueVariantGenerateOptions.MessagePackFormatter)) { #>
     [MessagePackFormatter(typeof(<#= TypeName #>.MessagePackFormatter))]
 <# } #>
@@ -60,7 +59,7 @@ namespace <#= Namespace #>
 
         public readonly TypeIndex Index;
 
-        byte V2.Details.IValueVariant.TypeIndexByte { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => (byte)this.Index; }
+        byte V2.Details.IValueVariant.TypeIndex { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => (byte)this.Index; }
 
         private <#= TypeName #>(in Union value, TypeIndex index)
             => (this.Value, this.Index) = (value, index);
@@ -116,75 +115,47 @@ namespace <#= Namespace #>
 
         public interface IFuncVisitor<in TA1, out TR> : <#= Join(1, Count, e => $"V2.IValueVariantFuncVisitor<T{e}, TA1, TR>") #> { }
 
-        public void Accept(IActionVisitor visitor)
-            => this.AcceptActionVisitor(visitor);
-
-        public void Accept<TA1>(IActionVisitor<TA1> visitor, TA1 arg1)
-            => this.AcceptActionVisitor(visitor, arg1);
-
         public TR Accept<TR>(IFuncVisitor<TR> visitor)
         {
-            this.AcceptFuncVisitor(visitor, out TR result);
+            this.Accept(visitor, out TR result);
             return result;
         }
 
         public TR Accept<TA1, TR>(IFuncVisitor<TA1, TR> visitor, TA1 arg1)
         {
-            this.AcceptFuncVisitor(visitor, arg1, out TR result);
+            this.Accept(visitor, arg1, out TR result);
             return result;
         }
 
-        public void Accept(V2.IValueVariantGenericActionVisitor visitor)
-            => this.AcceptGenericActionVisitor(visitor);
-
-        public void Accept<TA1>(V2.IValueVariantGenericActionVisitor<TA1> visitor, TA1 arg1)
-            => this.AcceptGenericActionVisitor(visitor, arg1);
-
-        public TR Accept<TA1, TR>(V2.IValueVariantGenericFuncVisitor<TA1, TR> visitor, TA1 arg1)
-        {
-            this.AcceptGenericFuncVisitor(visitor, arg1, out TR result);
-            return result;
-        }
-
-        public TR Accept<TR>(V2.IValueVariantGenericFuncVisitor<TR> visitor)
-        {
-            this.AcceptGenericFuncVisitor(visitor, out TR result);
-            return result;
-        }
-
-        public void AcceptActionVisitor<TV>(in TV visitor)
+        public void Accept<TV>(in TV visitor)
             where TV : <#= Join(1, Count, e => $"V2.IValueVariantActionVisitor<T{e}>") #>
             => V2.Details.ValueVariant<<#= Join(1, Count, e => $"T{e}") #>>.AcceptActionVisitor(this, visitor);
 
-        public void AcceptActionVisitor<TV, TA1>(in TV visitor, TA1 arg1)
+        public void Accept<TV, TA1>(in TV visitor, TA1 arg1)
             where TV : <#= Join(1, Count, e => $"V2.IValueVariantActionVisitor<T{e}, TA1>") #>
             => V2.Details.ValueVariant<<#= Join(1, Count, e => $"T{e}") #>>.AcceptActionVisitor(this, visitor, arg1);
 
-        public void AcceptFuncVisitor<TV, TR>(in TV visitor, out TR result)
+        public void Accept<TV, TR>(in TV visitor, out TR result)
             where TV : <#= Join(1, Count, e => $"V2.IValueVariantFuncVisitor<T{e}, TR>") #>
             => result = V2.Details.ValueVariant<<#= Join(1, Count, e => $"T{e}") #>>.AcceptFuncVisitor<T, TV, TR>(this, visitor);
 
-        public void AcceptFuncVisitor<TV, TA1, TR>(in TV visitor, TA1 arg1, out TR result)
+        public void Accept<TV, TA1, TR>(in TV visitor, TA1 arg1, out TR result)
             where TV : <#= Join(1, Count, e => $"V2.IValueVariantFuncVisitor<T{e}, TA1, TR>") #>
             => result = V2.Details.ValueVariant<<#= Join(1, Count, e => $"T{e}") #>>.AcceptFuncVisitor<T, TV, TA1, TR>(this, visitor, arg1);
 
-        public void AcceptGenericActionVisitor<TV>(in TV visitor)
-            where TV : V2.IValueVariantGenericActionVisitor
+        public void Accept(V2.IValueVariantGenericActionVisitor visitor)
             => V2.Details.ValueVariant<<#= Join(1, Count, e => $"T{e}") #>>.AcceptGenericActionVisitor(this, visitor);
 
-        public void AcceptGenericActionVisitor<TV, TA1>(in TV visitor, TA1 arg1)
-            where TV : V2.IValueVariantGenericActionVisitor<TA1>
+        public void Accept<TA1>(V2.IValueVariantGenericActionVisitor<TA1> visitor, TA1 arg1)
             => V2.Details.ValueVariant<<#= Join(1, Count, e => $"T{e}") #>>.AcceptGenericActionVisitor(this, visitor, arg1);
 
-        public void AcceptGenericFuncVisitor<TV, TR>(in TV visitor, out TR result)
-            where TV : V2.IValueVariantGenericFuncVisitor<TR>
-            => result = V2.Details.ValueVariant<<#= Join(1, Count, e => $"T{e}") #>>.AcceptGenericFuncVisitor<T, TV, TR>(this, visitor);
+        public TR Accept<TR>(V2.IValueVariantGenericFuncVisitor<TR> visitor)
+            => V2.Details.ValueVariant<<#= Join(1, Count, e => $"T{e}") #>>.AcceptGenericFuncVisitor<T, V2.IValueVariantGenericFuncVisitor<TR>, TR>(this, visitor);
 
-        public void AcceptGenericFuncVisitor<TV, TA1, TR>(in TV visitor, TA1 arg1, out TR result)
-            where TV : V2.IValueVariantGenericFuncVisitor<TA1, TR>
-            => result = V2.Details.ValueVariant<<#= Join(1, Count, e => $"T{e}") #>>.AcceptGenericFuncVisitor<T, TV, TA1, TR>(this, visitor, arg1);
+        public TR Accept<TA1, TR>(V2.IValueVariantGenericFuncVisitor<TA1, TR> visitor, TA1 arg1)
+            => V2.Details.ValueVariant<<#= Join(1, Count, e => $"T{e}") #>>.AcceptGenericFuncVisitor<T, V2.IValueVariantGenericFuncVisitor<TA1, TR>, TA1, TR>(this, visitor, arg1);
 
-        public struct DefaultConverter : IFuncVisitor<T>
+        public readonly struct DefaultConverter : IFuncVisitor<T>
         {
 <# for (var i = 1; i <= Count; ++i ) { #>
             public T Visit(in T<#= i #> value) => value;

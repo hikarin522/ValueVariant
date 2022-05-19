@@ -37,15 +37,18 @@
     <Compile Update="@(T4->'%(RelativeDir)%(Filename).cs')">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>%(RelativeDir)%(Filename).tt</DependentUpon>
+      <DependentUpon>%(Filename).tt</DependentUpon>
     </Compile>
   </ItemGroup>
 
   <Target Name="T4Generate" BeforeTargets="BeforeBuild" Condition="'$(MSBuildRuntimeType)' != 'Full'">
     <Exec Command="dotnet t4 &quot;%(T4.Filename).tt&quot; -c &quot;$(RootNamespace).%(T4.Filename)&quot; -o &quot;%(T4.Filename).cs&quot;" WorkingDirectory="$(MSBuildProjectDirectory)\%(T4.RelativeDir)" />
     <ItemGroup>
-      <Compile Remove="@(T4->'%(RelativeDir)%(Filename).cs')" />
-      <Compile Include="@(T4->'%(RelativeDir)%(Filename).cs')" />
+      <Compile Include="@(T4->'%(RelativeDir)%(Filename).cs')" Exclude="@(Compile)">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>%(Filename).tt</DependentUpon>
+      </Compile>
     </ItemGroup>
   </Target>
 
