@@ -75,7 +75,7 @@ namespace <#= Namespace #>
 #if NETSTANDARD2_1_OR_GREATER
         [DoesNotReturn]
 #endif
-        private TV ThrowInvalidCastException<TV>() => throw new InvalidCastException();
+        private static TV ThrowInvalidCastException<TV>() => throw new InvalidCastException();
 
 <# for (var i = 1; i <= Count; ++i ) { #>
         public static implicit operator T(T<#= i #> value) => new T(value);

@@ -44,7 +44,8 @@
   <Target Name="T4Generate" BeforeTargets="BeforeBuild" Condition="'$(MSBuildRuntimeType)' != 'Full'">
     <Exec Command="dotnet t4 &quot;%(T4.Filename).tt&quot; -c &quot;$(RootNamespace).%(T4.Filename)&quot; -o &quot;%(T4.Filename).cs&quot;" WorkingDirectory="$(MSBuildProjectDirectory)\%(T4.RelativeDir)" />
     <ItemGroup>
-      <Compile Include="@(T4->'%(RelativeDir)%(Filename).cs')" Exclude="@(Compile)">
+      <T4Generated Include="@(T4->'%(RelativeDir)%(Filename).cs')" Exclude="@(Compile)" />
+      <Compile Include="@(T4Generated)">
         <DesignTime>True</DesignTime>
         <AutoGen>True</AutoGen>
         <DependentUpon>%(Filename).tt</DependentUpon>
