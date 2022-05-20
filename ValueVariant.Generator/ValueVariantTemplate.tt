@@ -169,8 +169,9 @@ namespace <#= Namespace #>
             {
                 options.Resolver.GetFormatterWithVerify<TypeIndex>().Serialize(ref writer, value.Index, options);
                 switch (value.Index) {
+                    case TypeIndex.None: return;
 <#   for (var i = 1; i <= Count; ++i) { #>
-                    case TypeIndex.Type<#= i #>: options.Resolver.GetFormatterWithVerify<T<#= i #>>().Serialize(ref writer, value.Item<#= i #>, options); break;
+                    case TypeIndex.Type<#= i #>: options.Resolver.GetFormatterWithVerify<T<#= i #>>().Serialize(ref writer, value.Item<#= i #>, options); return;
 <#   } #>
                     default: throw new InvalidOperationException();
                 }
@@ -180,6 +181,7 @@ namespace <#= Namespace #>
             {
                 var index = options.Resolver.GetFormatterWithVerify<TypeIndex>().Deserialize(ref reader, options);
                 switch (index) {
+                    case TypeIndex.None: return default(T);
 <#   for (var i = 1; i <= Count; ++i) { #>
                     case TypeIndex.Type<#= i #>: return new T(options.Resolver.GetFormatterWithVerify<T<#= i #>>().Deserialize(ref reader, options));
 <#   } #>
