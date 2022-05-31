@@ -11,7 +11,7 @@ C# source generator to generate efficient and type-safe variant types for unmana
 using System.ValueVariant;
 
 [ValueVariant]
-public readonly partial struct SampleVariant: IValueVariant<int, long, float> { }
+public readonly partial struct SampleVariant: IValueVariant<SampleVariant, int, long, float> { }
 ```
 
 will generates
