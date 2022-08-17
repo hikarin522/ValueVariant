@@ -167,7 +167,7 @@ namespace <#= Namespace #>
         {
             public void Serialize(ref MessagePackWriter writer, T value, MessagePackSerializerOptions options)
             {
-                options.Resolver.GetFormatterWithVerify<TypeIndex>().Serialize(ref writer, value.Index, options);
+                options.Resolver.GetFormatterWithVerify<byte>().Serialize(ref writer, (byte)value.Index, options);
                 switch (value.Index) {
                     case TypeIndex.None: return;
 <#   for (var i = 1; i <= Count; ++i) { #>
@@ -179,7 +179,7 @@ namespace <#= Namespace #>
 
             public T Deserialize(ref MessagePackReader reader, MessagePackSerializerOptions options)
             {
-                var index = options.Resolver.GetFormatterWithVerify<TypeIndex>().Deserialize(ref reader, options);
+                var index = (TypeIndex)options.Resolver.GetFormatterWithVerify<byte>().Deserialize(ref reader, options);
                 switch (index) {
                     case TypeIndex.None: return default(T);
 <#   for (var i = 1; i <= Count; ++i) { #>
