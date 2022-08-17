@@ -53,6 +53,9 @@ namespace <#= Namespace #>
 <# } #>
         }
 
+<# if (Options.HasFlag(ValueVariantGenerateOptions.MessagePackFormatter)) { #>
+        [MessagePackFormatter(typeof(<#= TypeName #>.TypeIndexFormatter))]
+<# } #>
         public enum TypeIndex : byte { None, <#= Join(1, Count, e => $"Type{e}") #> }
 
         private readonly Union Value;
@@ -187,6 +190,19 @@ namespace <#= Namespace #>
 <#   } #>
                     default: throw new InvalidOperationException();
                 }
+            }
+        }
+
+        private sealed class TypeIndexFormatter : IMessagePackFormatter<TypeIndex>
+        {
+            public void Serialize(ref MessagePackWriter writer, TypeIndex value, MessagePackSerializerOptions options)
+            {
+                writer.Write((Int32)value);
+            }
+
+            public TypeIndex Deserialize(ref MessagePackReader reader, MessagePackSerializerOptions options)
+            {
+                return (TypeIndex)reader.ReadInt32();
             }
         }
 <# } #>
