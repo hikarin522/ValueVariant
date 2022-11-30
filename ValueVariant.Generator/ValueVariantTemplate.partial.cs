@@ -1,6 +1,5 @@
 
 using System.Linq;
-using System.ValueVariant;
 
 namespace ValueVariant.Generator;
 

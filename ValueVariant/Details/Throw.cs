@@ -1,9 +1,10 @@
+using System;
 
 #if NETSTANDARD2_1_OR_GREATER
 using System.Diagnostics.CodeAnalysis;
 #endif
 
-namespace System.ValueVariant.Details;
+namespace ValueVariant.Details;
 
 internal static class Throw
 {

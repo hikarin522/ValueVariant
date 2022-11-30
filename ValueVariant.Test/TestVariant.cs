@@ -1,7 +1,5 @@
 using System;
 
-using System.ValueVariant;
-
 using Variant.Test;
 
 namespace ValueVariant.Test;

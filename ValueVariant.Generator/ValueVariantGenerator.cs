@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.ValueVariant;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -44,7 +43,7 @@ public sealed class ValueVariantGenerator : ISourceGenerator
             if (attr is null) return (symbol, attr, itf: default(INamedTypeSymbol?));
 
             var itf = symbol.Interfaces
-                .SingleOrDefault(e => e.ToString().StartsWith("System.ValueVariant.IValueVariant<") && e.TypeArguments.Length >= 2);
+                .SingleOrDefault(e => e.ToString().StartsWith("ValueVariant.IValueVariant<") && e.TypeArguments.Length >= 2);
 
             return (symbol, attr, itf);
         }).Where(e => e.attr is not null && e.itf is not null).Select(e => (e.symbol, e.attr!, e.itf!));

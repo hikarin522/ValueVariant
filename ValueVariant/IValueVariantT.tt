@@ -10,7 +10,7 @@
 // </auto-generated>
 #nullable enable
 
-namespace System.ValueVariant;
+namespace ValueVariant;
 <# for (var i = 1; i <= MaxTypeParam; ++i) { #>
 
 public interface IValueVariant<T, <#= Join(1, i, e => $"T{e}") #>>:
