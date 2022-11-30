@@ -1,5 +1,5 @@
 
-namespace System.ValueVariant;
+namespace ValueVariant;
 
 public interface IValueVariantActionVisitor<T> where T: unmanaged
 {

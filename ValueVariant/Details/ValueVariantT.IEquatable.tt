@@ -10,12 +10,13 @@
 // </auto-generated>
 #nullable enable
 
+using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
-using V2 = System.ValueVariant;
+using V2 = ValueVariant;
 
-namespace System.ValueVariant.Details;
+namespace ValueVariant.Details;
 <# for (var i = 1; i <= MaxTypeParam; ++i) { #>
 
 partial class ValueVariant<<#= Join(1, i, e => $"T{e}") #>>

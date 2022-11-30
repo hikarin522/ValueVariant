@@ -1,5 +1,4 @@
 using System;
-using System.ValueVariant;
 
 using MessagePack;
 
@@ -20,21 +19,25 @@ namespace ValueVariant.Test
 
             v = default(int);
             Assert.Equal(typeof(int), v.Accept(new TestVariantVisitor()));
-            v.Accept(new TestVariant2.DefaultConverter(), out v2);
+            v2 = (TestVariant2)v;
             v2.Accept(new TestVariantVisitor(), out type);
             Assert.Equal(typeof(int), type);
 
             v = default(TestStruct<Guid>);
             Assert.Equal(typeof(TestStruct<Guid>), v.Accept(new TestVariantVisitor()));
-            v.Accept(new TestVariant2.DefaultConverter(), out v2);
+            v2 = (TestVariant2)v;
             v2.Accept(new TestVariantVisitor(), out type);
             Assert.Equal(typeof(TestStruct<Guid>), type);
 
             v = default(DateTime);
             Assert.Equal(typeof(DateTime), v.Accept(new TestVariantVisitor()));
-            v.Accept(new TestVariant2.DefaultConverter(), out v2);
+            v2 = (TestVariant2)v;
             v2.Accept(new TestVariantVisitor(), out type);
             Assert.Equal(typeof(DateTime), type);
+
+            v2 = default(long);
+            Assert.Equal(typeof(long), v2.Accept(new TestVariantVisitor()));
+            Assert.Throws<InvalidCastException>(() => (TestVariant)v2);
         }
 
         [Fact]

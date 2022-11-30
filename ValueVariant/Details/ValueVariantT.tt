@@ -10,7 +10,7 @@
 // </auto-generated>
 #nullable enable
 
-namespace System.ValueVariant.Details;
+namespace ValueVariant.Details;
 <# for (var i = 1; i <= MaxTypeParam; ++i) { #>
 
 public static partial class ValueVariant<<#= Join(1, i, e => $"T{e}") #>> <#= string.Join(" ", Range(1, i, e => $"where T{e}: unmanaged")) #> { }

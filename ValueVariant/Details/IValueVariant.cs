@@ -1,7 +1,7 @@
 
 using System.Runtime.CompilerServices;
 
-namespace System.ValueVariant.Details;
+namespace ValueVariant.Details;
 
 public interface IValueVariant
 {

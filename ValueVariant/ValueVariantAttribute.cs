@@ -1,5 +1,6 @@
+using System;
 
-namespace System.ValueVariant
+namespace ValueVariant
 {
     [Flags]
     public enum ValueVariantGenerateOptions

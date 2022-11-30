@@ -11,9 +11,10 @@
 #nullable enable
 
 using System.Runtime.CompilerServices;
-using System.ValueVariant.Details;
 
-namespace System.ValueVariant;
+using ValueVariant.Details;
+
+namespace ValueVariant;
 <# for (var i = 1; i <= MaxTypeParam; ++i) { #>
 
 public static class ValueVariant<#= i #>
