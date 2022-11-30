@@ -60,3 +60,35 @@ readonly partial struct SampleVariant: IEquatable<SampleVariant>
     ...
 }
 ```
+
+## Type conversion between variant types
+
+```cs
+[ValueVariant]
+public readonly partial struct SampleVariant1 : IValueVariant<SampleVariant1, int, Guid, DateTime>
+{
+    public static explicit operator SampleVariant1(SampleVariant2 value)
+        => value.TryCast(out var result) ? result : throw new InvalidCastException();
+
+    public readonly bool TryCast(out SampleVariant2 result)
+    {
+        if (this == default) { result = default; return true; }
+        this.Accept(SampleVariant2.DefaultConverter.Instance, out result);
+        return result != default;
+    }
+}
+
+[ValueVariant]
+public readonly partial struct SampleVariant2 : IValueVariant<SampleVariant2, Guid, DateTime, int, long, bool>
+{
+    public static explicit operator SampleVariant2(SampleVariant1 value)
+        => value.TryCast(out var result) ? result : throw new InvalidCastException();
+
+    public readonly bool TryCast(out SampleVariant1 result)
+    {
+        if (this == default) { result = default; return true; }
+        this.Accept(SampleVariant1.DefaultConverter<long, bool>.Instance, out result);
+        return result != default;
+    }
+}
+```
