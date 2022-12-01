@@ -68,27 +68,22 @@ readonly partial struct SampleVariant: IEquatable<SampleVariant>
 public readonly partial struct SampleVariant1 : IValueVariant<SampleVariant1, int, Guid, DateTime>
 {
     public static explicit operator SampleVariant1(SampleVariant2 value)
-        => value.TryCast(out var result) ? result : throw new InvalidCastException();
+        => value.Accept(SampleVariant2Converter.Instance);
 
-    public readonly bool TryCast(out SampleVariant2 result)
+    private sealed class SampleVariant2Converter : DefaultConverter<SampleVariant2Converter>, SampleVariant2.IFuncVisitor<SampleVariant1>
     {
-        if (this == default) { result = default; return true; }
-        this.Accept(SampleVariant2.DefaultConverter.Instance, out result);
-        return result != default;
+        public SampleVariant1 Visit(in long value) => throw new InvalidCastException();
+        public SampleVariant1 Visit(in bool value) => throw new InvalidCastException();
     }
 }
 
 [ValueVariant]
 public readonly partial struct SampleVariant2 : IValueVariant<SampleVariant2, Guid, DateTime, int, long, bool>
 {
-    public static explicit operator SampleVariant2(SampleVariant1 value)
-        => value.TryCast(out var result) ? result : throw new InvalidCastException();
+    // implicit because SampleVariant1 ⊂ SampleVariant2
+    public static implicit operator SampleVariant2(SampleVariant1 value)
+        => value.Accept(SampleVariant1Converter.Instance);
 
-    public readonly bool TryCast(out SampleVariant1 result)
-    {
-        if (this == default) { result = default; return true; }
-        this.Accept(SampleVariant1.DefaultConverter<long, bool>.Instance, out result);
-        return result != default;
-    }
+    private sealed class SampleVariant1Converter : DefaultConverter<SampleVariant1Converter>, SampleVariant1.IFuncVisitor<SampleVariant2> { }
 }
 ```

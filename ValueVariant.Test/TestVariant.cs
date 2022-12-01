@@ -8,13 +8,12 @@ namespace ValueVariant.Test;
 public readonly partial struct TestVariant : IValueVariant<TestVariant, int, TestStruct<Guid>, DateTime>
 {
     public static explicit operator TestVariant(TestVariant2 value)
-            => value.TryCast(out var result) ? result : throw new InvalidCastException();
+        => value.Accept(TestVariant2Converter.Instance);
 
-    public readonly bool TryCast(out TestVariant2 result)
+    private sealed class TestVariant2Converter : DefaultConverter<TestVariant2Converter>, TestVariant2.IFuncVisitor<TestVariant>
     {
-        if (this == default) { result = default; return true; }
-        this.Accept(TestVariant2.DefaultConverter.Instance, out result);
-        return result != default;
+        public TestVariant Visit(in long value) => throw new InvalidCastException();
+        public TestVariant Visit(in bool value) => throw new InvalidCastException();
     }
 }
 
@@ -34,13 +33,9 @@ public readonly struct TestVariantVisitor : TestVariant.IFuncVisitor<Type>, Test
 [ValueVariant]
 public readonly partial struct TestVariant2 : IValueVariant<TestVariant2, TestStruct<Guid>, DateTime, int, long, bool>
 {
-    public static explicit operator TestVariant2(TestVariant value)
-        => value.TryCast(out var result) ? result : throw new InvalidCastException();
+    // implicit because TestVariant ⊂ TestVariant2
+    public static implicit operator TestVariant2(TestVariant value)
+        => value.Accept(TestVariantConverter.Instance);
 
-    public readonly bool TryCast(out TestVariant result)
-    {
-        if (this == default) { result = default; return true; }
-        this.Accept(TestVariant.DefaultConverter<long, bool>.Instance, out result);
-        return result != default;
-    }
+    private sealed class TestVariantConverter : DefaultConverter<TestVariantConverter>, TestVariant.IFuncVisitor<TestVariant2> { }
 }
